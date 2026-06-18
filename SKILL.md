@@ -7,7 +7,7 @@ description: Decompose React or React Native component architecture for cleaner 
 
 Use when user wants to improve React or React Native component structure, not patch symptom.
 
-Leading idea: perfect JSX structure gives good performance. Clean ownership, small components, narrow subscriptions, single responsibility. Fast by construction.
+Leading idea: split mixed logic into smaller components and custom hooks with clean ownership, explicit interfaces, and Rules of React-friendly structure. Prefer simple boundaries that follow SOLID over clever abstractions. Good JSX structure gives good performance.
 
 ## Steps
 
@@ -24,6 +24,7 @@ Leading idea: perfect JSX structure gives good performance. Clean ownership, sma
    - effects location
    - context usage
    - subscriptions or selectors
+   - similar local patterns worth matching or intentionally improving
      Completion criterion: current ownership map clear.
 
 3. Find mixed concerns.
@@ -51,14 +52,14 @@ Leading idea: perfect JSX structure gives good performance. Clean ownership, sma
 
 5. Choose decomposition pattern.
    Prefer one or more:
-   - side-effect isolation via renderless component
+   - abstract logic into custom hooks
+   - specialized component extraction
    - data ownership push-down
    - selector narrowing
    - interface tightening
-   - abstract logic into custom hooks
    - shared component extraction
-   - specialized component extraction
    - variant split by use case
+   - side-effect isolation via renderless component when a hook or focused component is not enough
    - specialized component swap like FlatList or FlashList
      Completion criterion: chosen pattern matches actual smell.
 
@@ -71,6 +72,7 @@ Leading idea: perfect JSX structure gives good performance. Clean ownership, sma
    - children/composition before prop drilling
    - context only when many distant consumers truly need same value
    - early returns to cut inactive branches fast
+   - small explicit interfaces between components and hooks
    - if React Compiler works, do not use memo, useMemo, or useCallback
      Completion criterion: no structural fix replaced by memo band-aid.
 
@@ -106,6 +108,10 @@ Leading idea: perfect JSX structure gives good performance. Clean ownership, sma
 - If list built with ScrollView and many items, use specialized list.
 - If broad store or context change hits unrelated leaves, narrow ownership.
 - If component name vague, boundary probably vague too.
+- If a new boundary has a real name and single job, give it its own file.
+- If a child does not need the full object, narrow with simple props.
+- Prefer a custom hook before inventing a clever component API.
+- Check nearby code for patterns worth matching before introducing a new abstraction.
 
 ## React Native focus
 
